@@ -1,5 +1,5 @@
 redash:
-  image: redash/redash:latest
+  image: redash-teradata
   ports:
     - "5000:5000"
   links:

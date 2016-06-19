@@ -25,6 +25,17 @@ WORKDIR /opt/redash/current
 
 ENV REDASH_STATIC_ASSETS_PATH="../rd_ui/dist/"
 
+# Install teradata python module dependencies
+RUN mkdir /opt/teradata_odbc
+COPY teradata_odbc/TeraGSS_linux_x64-15.10.01.01-1.noarch.rpm /opt/teradata_odbc
+COPY teradata_odbc/tdicu1510-15.10.01.00-1.noarch.rpm /opt/teradata_odbc
+COPY teradata_odbc/tdodbc1510-15.10.01.01-1.noarch.rpm  /opt/teradata_odbc
+RUN    apt-get update \
+    && apt-get install -y alien \
+    && alien -i /opt/teradata_odbc/TeraGSS_linux_x64-15.10.01.01-1.noarch.rpm --scripts \
+    && alien -i /opt/teradata_odbc/tdicu1510-15.10.01.00-1.noarch.rpm --scripts \
+    && alien -i /opt/teradata_odbc/tdodbc1510-15.10.01.01-1.noarch.rpm --scripts
+
 # Install project specific dependencies
 RUN pip install -r requirements_all_ds.txt && \
   pip install -r requirements.txt
