@@ -31,7 +31,7 @@ COPY teradata_odbc/TeraGSS_linux_x64-15.10.01.01-1.noarch.rpm /opt/teradata_odbc
 COPY teradata_odbc/tdicu1510-15.10.01.00-1.noarch.rpm /opt/teradata_odbc
 COPY teradata_odbc/tdodbc1510-15.10.01.01-1.noarch.rpm  /opt/teradata_odbc
 RUN    apt-get update \
-    && apt-get install -y alien \
+    && apt-get install -y alien pdksh unixodbc\
     && alien -i /opt/teradata_odbc/TeraGSS_linux_x64-15.10.01.01-1.noarch.rpm --scripts \
     && alien -i /opt/teradata_odbc/tdicu1510-15.10.01.00-1.noarch.rpm --scripts \
     && alien -i /opt/teradata_odbc/tdodbc1510-15.10.01.01-1.noarch.rpm --scripts
