@@ -25,17 +25,6 @@ WORKDIR /opt/redash/current
 
 ENV REDASH_STATIC_ASSETS_PATH="../rd_ui/dist/"
 
-# Install teradata python module dependencies
-RUN mkdir /opt/teradata_odbc
-COPY teradata_odbc/TeraGSS_linux_x64-15.10.01.01-1.noarch.rpm /opt/teradata_odbc
-COPY teradata_odbc/tdicu1510-15.10.01.00-1.noarch.rpm /opt/teradata_odbc
-COPY teradata_odbc/tdodbc1510-15.10.01.01-1.noarch.rpm  /opt/teradata_odbc
-RUN    apt-get update \
-    && apt-get install -y alien pdksh unixodbc\
-    && alien -i /opt/teradata_odbc/TeraGSS_linux_x64-15.10.01.01-1.noarch.rpm --scripts \
-    && alien -i /opt/teradata_odbc/tdicu1510-15.10.01.00-1.noarch.rpm --scripts \
-    && alien -i /opt/teradata_odbc/tdodbc1510-15.10.01.01-1.noarch.rpm --scripts
-
 # Install project specific dependencies
 RUN pip install -r requirements_all_ds.txt && \
   pip install -r requirements.txt
@@ -55,6 +44,36 @@ RUN mkdir -p /opt/redash/supervisord && \
 
 # Fix permissions
 RUN chown -R redash /opt/redash
+
+# Install teradata python module dependencies
+RUN mkdir /opt/teradata_odbc
+COPY teradata_odbc/TeraGSS_linux_x64-15.10.01.01-1.noarch.rpm /opt/teradata_odbc
+COPY teradata_odbc/tdicu1510-15.10.01.00-1.noarch.rpm /opt/teradata_odbc
+COPY teradata_odbc/tdodbc1510-15.10.01.01-1.noarch.rpm  /opt/teradata_odbc
+RUN    apt-get update \
+    && apt-get install -y alien pdksh unixodbc\
+    && alien -i /opt/teradata_odbc/TeraGSS_linux_x64-15.10.01.01-1.noarch.rpm --scripts \
+    && alien -i /opt/teradata_odbc/tdicu1510-15.10.01.00-1.noarch.rpm --scripts \
+    && alien -i /opt/teradata_odbc/tdodbc1510-15.10.01.01-1.noarch.rpm --scripts
+ENV ODBCINI=/opt/teradata/client/15.10/odbc_64/odbc.ini
+RUN ln -sfn /opt/teradata/client/15.10/lib64/libicudatatd.so.52.1 /usr/lib/libicudatatd.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/libicudatatd.so.52.1 /usr/lib/libicudatatd.so.52; \
+ln -sfn /opt/teradata/client/15.10/lib64/libicui18ntd.so.52.1 /usr/lib/libicui18ntd.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/libicui18ntd.so.52.1 /usr/lib/libicui18ntd.so.52 ;\
+ln -sfn /opt/teradata/client/15.10/lib64/libicuiotd.so.52.1 /usr/lib/libicuiotd.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/libicuiotd.so.52.1 /usr/lib/libicuiotd.so.52;\
+ln -sfn /opt/teradata/client/15.10/lib64/libiculetd.so.52.1 /usr/lib/libiculetd.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/libiculetd.so.52.1 /usr/lib/libiculetd.so.52;\
+ln -sfn /opt/teradata/client/15.10/lib64/libiculxtd.so.52.1 /usr/lib/libiculxtd.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/libiculxtd.so.52.1 /usr/lib/libiculxtd.so.52;\
+ln -sfn /opt/teradata/client/15.10/lib64/libicuuctd.so.52.1 /usr/lib/libicuuctd.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/libicuuctd.so.52.1 /usr/lib/libicuuctd.so.52;\
+ln -sfn /opt/teradata/client/15.10/lib64/libivicu27.so /usr/lib/libivicu27.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/libodbc.so /usr/lib/libodbc.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/libodbcinst.so /usr/lib/libodbcinst.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/odbccurs.so /usr/lib/odbccurs.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/vscnctdlg.so /usr/lib/vscnctdlg.so;\
+ln -sfn /opt/teradata/client/15.10/lib64/libddicu27.so /usr/lib/libddicu27.so
 
 # Expose ports
 EXPOSE 5000
