@@ -69,7 +69,7 @@ class Teradata(BaseQueryRunner):
         import teradata
         connection = None
         try:
-            udaExec = teradata.UdaExec(appName="redash", version="1.0",logConsole=False)
+            udaExec = teradata.UdaExec(appName="redash", version="1.0",logConsole=False, odbcLibPath="/opt/teradata/client/ODBC_64/lib/tdata.so")
             connection = udaExec.connect(method="odbc", 
                                             system=self.configuration.get('host', ''),
                                             username=self.configuration.get('user', ''),
